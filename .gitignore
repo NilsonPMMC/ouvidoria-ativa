@@ -1,0 +1,15 @@
+# Ambiente virtual
+venv/
+
+# Arquivo de segredos (MUITO IMPORTANTE)
+.env
+
+# Logs
+logs/
+
+# Arquivos compilados do Python
+__pycache__/
+*.pyc
+
+# Banco de dados (se estiver usando sqlite)
+db.sqlite3atendimentos.csv

@@ -1,0 +1,20 @@
+Olá, {{ municipe_nome }}!
+
+A Prefeitura de Mogi das Cruzes gostaria de saber sua opinião sobre o atendimento referente ao Protocolo {{ protocolo }}.
+
+Sua avaliação é muito importante para a melhoria contínua dos nossos serviços.
+
+---------------------------------
+Detalhes do Atendimento:
+Serviço: {{ servico }}
+Bairro: {{ bairro }}
+Data de Conclusão: {{ data_conclusao }}
+---------------------------------
+
+Por favor, acesse o link abaixo para responder à pesquisa:
+
+{{ url_pesquisa }}
+
+Obrigado!
+
+© 2025 Prefeitura de Mogi das Cruzes.
