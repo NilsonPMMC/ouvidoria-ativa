@@ -59,8 +59,8 @@ class AtendimentoAdmin(admin.ModelAdmin):
         'bairro', 
         'distrito', 
         'data_conclusao', 
-        'latitude',     # <-- ADICIONADO
-        'longitude',    # <-- ADICIONADO
+        'latitude',
+        'longitude',
         'pesquisa_enviada'
     )
     search_fields = ('protocolo', 'municipe__nome_completo', 'municipe__cpf', 'categoria__nome', 'secretaria__nome', 'bairro', 'distrito')
@@ -159,7 +159,6 @@ class PesquisaAdmin(admin.ModelAdmin):
 
         Obrigado!"""
         
-        # [A FUNÇÃO CORRETA]
         mensagem_encoded = quote(template_mensagem)
         
         link_wa_me = f"https://wa.me/{telefone_limpo}?text={mensagem_encoded}"

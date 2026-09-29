@@ -29,7 +29,6 @@ class Command(BaseCommand):
 
         self.stdout.write(f"Procurando atendimentos concluídos em {target_date_str}...")
 
-        # [CORREÇÃO APLICADA AQUI]
         # Removemos o prefixo 'atendimento__' dos filtros de 'municipe'
         atendimentos_para_enviar = Atendimento.objects.select_related(
             'pesquisa', 
@@ -40,9 +39,9 @@ class Command(BaseCommand):
             data_conclusao=target_date,
             pesquisa__data_envio__isnull=True,
             pesquisa__respondida=False,
-            municipe__email__isnull=False  # <-- CORRIGIDO
+            municipe__email__isnull=False 
         ).exclude(
-            municipe__email=''      # <-- CORRIGIDO
+            municipe__email=''
         )
 
         if not atendimentos_para_enviar.exists():

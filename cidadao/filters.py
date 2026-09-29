@@ -4,14 +4,12 @@ from django_filters import rest_framework as filters
 from .models import Atendimento
 
 class AtendimentoFilter(filters.FilterSet):
-    # Opções para o filtro de status
     STATUS_CHOICES = (
         ('Respondida', 'Respondida'),
         ('Enviada', 'Enviada'),
         ('Não enviada', 'Não enviada'),
     )
 
-    # Filtro para o status da pesquisa
     status_pesquisa = filters.ChoiceFilter(
         choices=STATUS_CHOICES,
         method='filter_by_status',
@@ -20,10 +18,9 @@ class AtendimentoFilter(filters.FilterSet):
 
     class Meta:
         model = Atendimento
-        fields = ['secretaria'] # Habilita o filtro por ID da secretaria
+        fields = ['secretaria']
 
     def filter_by_status(self, queryset, name, value):
-        # Lógica customizada para traduzir o status em uma consulta
         if value == 'Respondida':
             return queryset.filter(pesquisa__respondida=True)
         if value == 'Enviada':

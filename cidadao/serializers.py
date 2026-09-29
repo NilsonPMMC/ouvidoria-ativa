@@ -36,20 +36,15 @@ class PesquisaDetailSerializer(serializers.ModelSerializer):
         return f"https://ouvidoria.mogidascruzes.sp.gov.br/pesquisa/{obj.token}"
 
 class AtendimentoCreateSerializer(serializers.Serializer):
-    # Campos do Munícipe
     cpf = serializers.CharField(max_length=11)
     nome_completo = serializers.CharField(max_length=255)
     email = serializers.EmailField()
-    telefone = serializers.CharField(max_length=20, required=False, allow_blank=True) # <-- Já existia, agora vamos usar
-    
-    # Campos do Atendimento
+    telefone = serializers.CharField(max_length=20, required=False, allow_blank=True)
     protocolo = serializers.CharField(max_length=50)
     data_conclusao = serializers.DateField()
     bairro = serializers.CharField(max_length=100, required=False, allow_blank=True)
-    
-    # --- NOVOS CAMPOS ---
-    distrito = serializers.CharField(max_length=100, required=False, allow_blank=True) # <-- Novo campo
-    categoria_nome = serializers.CharField(max_length=255, write_only=True) # <-- Campo para receber o nome da categoria
+    distrito = serializers.CharField(max_length=100, required=False, allow_blank=True)
+    categoria_nome = serializers.CharField(max_length=255, write_only=True)
 
     def create(self, validated_data):
         """
@@ -61,31 +56,25 @@ class AtendimentoCreateSerializer(serializers.Serializer):
             'email': validated_data['email'],
             'telefone': validated_data.get('telefone'),
         }
-        
-        # --- LÓGICA DA CATEGORIA (NOVO) ---
         categoria_nome = validated_data.pop('categoria_nome', None)
         categoria_obj = None
         secretaria_obj = None
         
         if categoria_nome:
             try:
-                # Encontra a categoria pelo nome
                 categoria_obj = Categoria.objects.get(nome__iexact=categoria_nome.strip())
-                # Puxa a secretaria automaticamente da categoria
                 secretaria_obj = categoria_obj.secretaria
             except Categoria.DoesNotExist:
-                # Se a categoria não for encontrada, não quebra a importação
-                # Apenas deixa os campos nulos e salva o nome no campo antigo
                 pass
         
         atendimento_data = {
             'protocolo': validated_data['protocolo'],
             'data_conclusao': validated_data['data_conclusao'],
             'bairro': validated_data.get('bairro'),
-            'distrito': validated_data.get('distrito'), # <-- Novo campo
-            'secretaria': secretaria_obj, # <-- Vinculado automaticamente
-            'categoria': categoria_obj,   # <-- Vinculado automaticamente
-            'servico_realizado': categoria_nome # <-- Salva o nome original no campo antigo
+            'distrito': validated_data.get('distrito'),
+            'secretaria': secretaria_obj,
+            'categoria': categoria_obj,
+            'servico_realizado': categoria_nome
         }
 
         municipe, created = Municipe.objects.update_or_create(
@@ -108,13 +97,11 @@ class AtendimentoListSerializer(serializers.ModelSerializer):
     municipe_id = serializers.IntegerField(source='municipe.id', read_only=True)
     secretaria_id = serializers.IntegerField(source='secretaria.id', read_only=True)
 
-    # Nossos novos campos que serão preenchidos pelos métodos abaixo
     status_pesquisa = serializers.SerializerMethodField()
     pesquisa_detalhes = serializers.SerializerMethodField()
 
     class Meta:
         model = Atendimento
-        # Adicionamos os novos campos e mantivemos os originais
         fields = [
             'id', 'protocolo', 'servico_realizado', 'data_conclusao',
             'municipe', 'secretaria', 'bairro', 'municipe_id', 'secretaria_id',
@@ -144,7 +131,6 @@ class AtendimentoListSerializer(serializers.ModelSerializer):
                 'comentario': pesquisa.comentario
             }
         except Pesquisa.DoesNotExist:
-            # Se não houver pesquisa, retorna nulo
             return None
 
 class AtendimentoDetailSerializer(serializers.ModelSerializer):

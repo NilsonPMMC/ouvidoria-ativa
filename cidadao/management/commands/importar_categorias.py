@@ -5,7 +5,6 @@ import io
 from django.core.management.base import BaseCommand
 from cidadao.models import Entidade, Secretaria, UnidadeAdm, Categoria
 
-# Dados CSV fornecidos por você
 DADOS_CSV = """Categoria,Tipo,Prazo,Unid. Adm. Responsável,Secretaria_Órgão,Entidade
 Capinação de guias e sarjetas,Serviço,30,Divisão de Fiscalização e Controle da Limpeza Pública,Serviços Urbanos e Zeladoria,Prefeitura Municipal de Mogi das Cruzes
 Desobstrução de galeria de drenagem,Serviço,60,Divisão de Fiscalização e Controle da Limpeza Pública,Serviços Urbanos e Zeladoria,Prefeitura Municipal de Mogi das Cruzes
@@ -105,8 +104,7 @@ class Command(BaseCommand):
                 if unid_created:
                     self.stdout.write(f"      > Criada Unidade Adm: {nome_unidade_adm}")
 
-                # 4. Cria ou atualiza a Categoria (Serviço)
-                # Usamos update_or_create para evitar duplicatas se o script for rodado novamente
+                # 4. Cria ou atualiza a Categoria
                 categoria, cat_created = Categoria.objects.update_or_create(
                     nome=nome_categoria,
                     secretaria=secretaria,
